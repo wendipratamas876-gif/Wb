@@ -1,112 +1,14 @@
-// =================== CONFIGURATION ===================
 const CONFIG = {
-    BOT_TOKEN: "8593943514:AAFP-TnIvMJ5NJFYo2oUAFxZX_-OFPt35xM",
-    DO_TOKEN: "dop_v1_8a3f89f841aeeb2fcec0df1f9b8041775332dca02658531320a7133bbd6b7f6b", // TOKEN KAMU
-    WHITELIST_USERS: [7473782076],
-    DO_API: "https://api.digitalocean.com/v2",
-    BOT_API: "https://api.telegram.org/bot",
-    BOT_USERNAME: "CloudSphereBot"
+
+  BOT_TOKEN: "8593943514:AAFP-TnIvMJ5NJFYo2oUAFxZX_-OFPt35xM",
+
+  DO_TOKEN: "dop_v1_8a3f89f841aeeb2fcec0df1f9b8041775332dca02658531320a7133bbd6b7f6b",
+
+  WHITELIST_USERS: [7473782076],
+
+  DO_API: "https://api.digitalocean.com/v2"
+
 };
-
-// =================== STATE ===================
-let state = {
-    user: null,
-    vpsList: [],
-    vpsPasswords: {},
-    createState: {
-        cpu: 'amd',
-        ram: '8',
-        region: 'sgp1',
-        os: 'ubuntu-22-04-x64',
-        name: `vps-${Date.now().toString().slice(-6)}`,
-        password: ''
-    },
-    currentStep: 1,
-    charts: {},
-    monitoringInterval: null,
-    selectedVPS: null,
-    activityLog: []
-};
-
-// =================== INITIALIZATION ===================
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 CloudSphere Initializing...');
-    
-    // Hide loading after 1 second
-    setTimeout(() => {
-        document.getElementById('loading').style.display = 'none';
-        checkAuth();
-    }, 1000);
-    
-    // Setup event listeners
-    setupEventListeners();
-});
-
-function setupEventListeners() {
-    // Login form enter key
-    document.getElementById('password')?.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') login();
-    });
-    
-    // Create form inputs
-    document.getElementById('vpsName')?.addEventListener('input', function(e) {
-        state.createState.name = e.target.value;
-        updateReview();
-    });
-    
-    document.getElementById('vpsRegion')?.addEventListener('change', function(e) {
-        state.createState.region = e.target.value;
-        updateReview();
-    });
-    
-    document.getElementById('vpsOS')?.addEventListener('change', function(e) {
-        state.createState.os = e.target.value;
-        updateReview();
-    });
-    
-    document.getElementById('rootPassword')?.addEventListener('input', function(e) {
-        state.createState.password = e.target.value;
-    });
-    
-    document.getElementById('enableBackup')?.addEventListener('change', updateReview);
-}
-
-// =================== AUTHENTICATION ===================
-function checkAuth() {
-    const token = localStorage.getItem('vps_token');
-    const user = localStorage.getItem('vps_user');
-    
-    if (token && user) {
-        try {
-            state.user = JSON.parse(user);
-            showApp();
-            loadDashboard();
-        } catch (e) {
-            console.error('Auth error:', e);
-            showLogin();
-        }
-    } else {
-        showLogin();
-    }
-}
-
-function showLogin() {
-    document.getElementById('loginScreen').classList.remove('hidden');
-    document.getElementById('app').classList.add('hidden');
-}
-
-function showApp() {
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    
-    // Update user info
-    if (state.user) {
-        document.getElementById('userName').textContent = state.user.username;
-        document.getElementById('userAvatar').textContent = state.user.username.charAt(0).toUpperCase();
-        document.getElementById('settingTelegram').textContent = state.user.telegram_id;
-    }
-}
-
 function login() {
     const telegramId = parseInt(document.getElementById('telegramId').value);
     const password = document.getElementById('password').value;
