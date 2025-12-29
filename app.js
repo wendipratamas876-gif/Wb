@@ -1,7 +1,7 @@
 // =================== CONFIGURATION ===================
 const CONFIG = {
     BOT_TOKEN: "8593943514:AAFP-TnIvMJ5NJFYo2oUAFxZX_-OFPt35xM",
-    DO_TOKEN: "dop_v1_7247527f3af1236d1faa1dd513124a513e88d325a75fbddc0f965c6daaa9d0f3",
+    DO_TOKEN: "dop_v1_95aef8e9c5d994dec0cef29e4abcf744b58079e1c1790d8180a7c49daa7f263d",
     WHITELIST_USERS: [7473782076],
     DO_API: "https://api.digitalocean.com/v2",
     BOT_API: "https://api.telegram.org/bot",
@@ -1539,3 +1539,4 @@ console.log('🔧 Configuration:', {
     DO_API: CONFIG.DO_API,
     WHITELIST_USERS: CONFIG.WHITELIST_USERS
 });
+
