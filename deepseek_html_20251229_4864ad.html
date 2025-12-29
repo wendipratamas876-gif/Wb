@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudSphere - VPS Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading">
+        <div class="loader"></div>
+        <h3>Starting CloudSphere...</h3>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="hidden">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-cloud"></i>
+                    <span>CloudSphere<span class="pro">PRO</span></span>
+                </div>
+                <p class="tagline">VPS Management Platform</p>
+            </div>
+            
+            <div class="login-card">
+                <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Telegram ID</label>
+                    <input type="number" id="telegramId" placeholder="Your Telegram ID" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-key"></i> Password</label>
+                    <div class="password-input">
+                        <input type="password" id="password" placeholder="Your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="btn-login" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+                
+                <button class="btn-telegram" onclick="createViaTelegram()">
+                    <i class="fab fa-telegram"></i> Create Account via Telegram
+                </button>
+                
+                <div class="login-footer">
+                    <p>Need help? Contact @CloudSphereBot on Telegram</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="hidden">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-cloud"></i>
+                    <span>CloudSphere</span>
+                </div>
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="user-info">
+                <div class="avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <h4 id="userName">User</h4>
+                    <p id="userPlan">Pro Plan</p>
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#" class="nav-item active" onclick="showPage('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showPage('vps')">
+                    <i class="fas fa-server"></i>
+                    <span>My VPS</span>
+                    <span class="badge" id="vpsCount">0</span>
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showPage('create')">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Create VPS</span>
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showPage('monitoring')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Monitoring</span>
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showPage('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="page-title">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Welcome back</p>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search VPS..." id="searchInput">
+                    </div>
+                    
+                    <button class="btn-notification" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Dashboard -->
+                <div id="dashboard" class="page active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalVPS">0</h3>
+                                <p>Active VPS</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="cpuUsage">0%</h3>
+                                <p>CPU Usage</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-memory"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="ramUsage">0%</h3>
+                                <p>RAM Usage</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-hdd"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="storageUsage">0%</h3>
+                                <p>Storage Usage</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <h3><i class="fas fa-chart-line"></i> Resource Usage</h3>
+                            <div id="chart1" class="chart"></div>
+                        </div>
+                        
+                        <div class="chart-box">
+                            <h3><i class="fas fa-server"></i> VPS Status</h3>
+                            <div id="chart2" class="chart"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-box">
+                        <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                        <div id="activityList" class="activity-list">
+                            <div class="activity-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p>System initialized successfully</p>
+                                    <span>Just now</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My VPS -->
+                <div id="vps" class="page">
+                    <div class="vps-header">
+                        <h2><i class="fas fa-server"></i> My Virtual Machines</h2>
+                        <button class="btn-create" onclick="showPage('create')">
+                            <i class="fas fa-plus"></i> Create VPS
+                        </button>
+                    </div>
+                    
+                    <div class="vps-list" id="vpsList">
+                        <!-- VPS will be loaded here -->
+                    </div>
+                    
+                    <div id="noVPS" class="no-vps">
+                        <i class="fas fa-server"></i>
+                        <h3>No VPS Found</h3>
+                        <p>Create your first virtual machine to get started</p>
+                        <button class="btn-create" onclick="showPage('create')">
+                            <i class="fas fa-plus"></i> Create First VPS
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Create VPS -->
+                <div id="create" class="page">
+                    <div class="create-header">
+                        <h2><i class="fas fa-plus-circle"></i> Create New VPS</h2>
+                        <p>Deploy a new virtual server in minutes</p>
+                    </div>
+                    
+                    <div class="create-steps">
+                        <div class="step active">1. CPU Type</div>
+                        <div class="step">2. RAM Size</div>
+                        <div class="step">3. Configuration</div>
+                        <div class="step">4. Review</div>
+                    </div>
+                    
+                    <!-- Step 1: CPU -->
+                    <div id="step1" class="create-step active">
+                        <h3>Choose CPU Type</h3>
+                        <div class="cpu-options">
+                            <div class="cpu-option active" onclick="selectCPU('amd')">
+                                <i class="fab fa-amd"></i>
+                                <h4>AMD EPYC</h4>
+                                <p>High performance AMD processors</p>
+                                <div class="price">From $20/month</div>
+                            </div>
+                            
+                            <div class="cpu-option" onclick="selectCPU('intel')">
+                                <i class="fab fa-intel"></i>
+                                <h4>Intel Premium</h4>
+                                <p>Premium Intel processors</p>
+                                <div class="price">From $24/month</div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-actions">
+                            <button class="btn-next" onclick="nextStep(2)">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: RAM -->
+                    <div id="step2" class="create-step">
+                        <h3>Select RAM Size</h3>
+                        <div class="ram-options">
+                            <div class="ram-option active" onclick="selectRAM(4)">
+                                <i class="fas fa-memory"></i>
+                                <h4>4 GB RAM</h4>
+                                <p>2 vCPU, 60 GB SSD</p>
+                                <div class="price">$20/month</div>
+                            </div>
+                            
+                            <div class="ram-option" onclick="selectRAM(8)">
+                                <i class="fas fa-memory"></i>
+                                <h4>8 GB RAM</h4>
+                                <p>4 vCPU, 120 GB SSD</p>
+                                <div class="price">$40/month</div>
+                            </div>
+                            
+                            <div class="ram-option" onclick="selectRAM(16)">
+                                <i class="fas fa-memory"></i>
+                                <h4>16 GB RAM</h4>
+                                <p>8 vCPU, 240 GB SSD</p>
+                                <div class="price">$80/month</div>
+                            </div>
+                            
+                            <div class="ram-option" onclick="selectRAM(32)">
+                                <i class="fas fa-memory"></i>
+                                <h4>32 GB RAM</h4>
+                                <p>16 vCPU, 480 GB SSD</p>
+                                <div class="price">$160/month</div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-actions">
+                            <button class="btn-prev" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+                            <button class="btn-next" onclick="nextStep(3)">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Config -->
+                    <div id="step3" class="create-step">
+                        <h3>VPS Configuration</h3>
+                        
+                        <div class="config-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-tag"></i> VPS Name</label>
+                                <input type="text" id="vpsName" placeholder="my-vps" value="vps-001">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-globe"></i> Region</label>
+                                    <select id="vpsRegion">
+                                        <option value="sgp1">Singapore</option>
+                                        <option value="nyc1">New York</option>
+                                        <option value="fra1">Frankfurt</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="fab fa-linux"></i> Operating System</label>
+                                    <select id="vpsOS">
+                                        <option value="ubuntu-22-04">Ubuntu 22.04</option>
+                                        <option value="ubuntu-24-04">Ubuntu 24.04</option>
+                                        <option value="debian-11">Debian 11</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-key"></i> Root Password</label>
+                                <div class="password-input">
+                                    <input type="password" id="rootPassword" placeholder="Enter password">
+                                    <button type="button" class="btn-generate" onclick="generatePassword()">
+                                        <i class="fas fa-random"></i> Generate
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-cogs"></i> Options</label>
+                                <div class="checkbox-group">
+                                    <label>
+                                        <input type="checkbox" id="enableBackup" checked>
+                                        <span>Enable Backups</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="enableIPv6" checked>
+                                        <span>Enable IPv6</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="enableMonitoring" checked>
+                                        <span>Enable Monitoring</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-actions">
+                            <button class="btn-prev" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+                            <button class="btn-next" onclick="nextStep(4)">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4: Review -->
+                    <div id="step4" class="create-step">
+                        <h3>Review & Create</h3>
+                        
+                        <div class="review-card">
+                            <div class="review-header">
+                                <h4>VPS Configuration</h4>
+                                <div class="price-tag">$40<span>/month</span></div>
+                            </div>
+                            
+                            <div class="review-details">
+                                <div class="detail-item">
+                                    <span>CPU:</span>
+                                    <strong id="reviewCPU">AMD EPYC</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>RAM:</span>
+                                    <strong id="reviewRAM">8 GB</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Storage:</span>
+                                    <strong id="reviewStorage">120 GB SSD</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Region:</span>
+                                    <strong id="reviewRegion">Singapore</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>OS:</span>
+                                    <strong id="reviewOS">Ubuntu 22.04</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-actions">
+                            <button class="btn-prev" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+                            <button class="btn-create-vps" onclick="createVPS()">
+                                <i class="fas fa-rocket"></i> Create VPS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring -->
+                <div id="monitoring" class="page">
+                    <div class="monitoring-header">
+                        <h2><i class="fas fa-chart-line"></i> Monitoring</h2>
+                        <select id="monitorSelect" class="vps-select">
+                            <option value="">Select VPS to monitor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="live-metrics">
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h3 id="liveCPU">0%</h3>
+                                <p>CPU Usage</p>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-memory"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h3 id="liveRAM">0%</h3>
+                                <p>RAM Usage</p>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-hdd"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h3 id="liveDisk">0%</h3>
+                                <p>Disk Usage</p>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h3 id="liveNetwork">0 MB/s</h3>
+                                <p>Network</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="monitoring-charts">
+                        <div class="chart-box">
+                            <h4>CPU & Memory History</h4>
+                            <div id="monitorChart1" class="chart"></div>
+                        </div>
+                        
+                        <div class="chart-box">
+                            <h4>Disk Usage</h4>
+                            <div id="monitorChart2" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div id="settings" class="page">
+                    <div class="settings-header">
+                        <h2><i class="fas fa-cog"></i> Settings</h2>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3><i class="fas fa-user"></i> Account</h3>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <span>Telegram ID:</span>
+                                <strong id="settingTelegram">Not set</strong>
+                            </div>
+                            <div class="setting-item">
+                                <span>Plan:</span>
+                                <strong>Pro</strong>
+                            </div>
+                            <div class="setting-item">
+                                <span>Created:</span>
+                                <strong id="settingCreated">Today</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                        <div class="settings-group">
+                            <button class="btn-change-password" onclick="changePassword()">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3><i class="fas fa-info-circle"></i> About</h3>
+                        <div class="settings-group">
+                            <p>CloudSphere VPS Manager v1.0.0</p>
+                            <p>© 2024 All rights reserved</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal Title</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="app.js"></script>
+</body>
+</html>
